@@ -1,0 +1,80 @@
+echo "Enter a number: "
+read c
+
+x=$c
+sum=0
+r=0
+n=0
+while [ $x -gt 0 ]
+do
+r=`expr $x % 10`
+n=`expr $r \* $r \* $r`
+sum=`expr $sum + $n`
+x=`expr $x / 10`
+done
+
+if [ $sum -eq $c ]
+then
+echo "It is an Armstrong Number."
+else
+echo "It is not an Armstrong Number."
+fi
+
+
+
+
+
+
+
+
+
+echo "Enter the number"
+read n
+number=$n
+reverse=0
+
+while [ $n -gt 0 ]
+do
+a=`expr $n % 10 `
+n=`expr $n / 10 `
+reverse=`expr $reverse \* 10 + $a`
+done
+
+if [ $number -eq $reverse ]
+then
+    echo "Number is palindrome"
+else
+	echo "Number is not palindrome"
+fi
+
+
+
+
+
+
+echo "enter a number"
+read num
+fact=1
+while [ $num -ge 1 ]
+do
+fact=`expr $fact \* $num`
+num=`expr $num - 1`
+done
+echo "factorial : $fact"
+
+
+
+
+
+
+echo "Enter String 1:"
+read s1
+echo "Enter String 2:"
+read s2
+
+if [ $s1 == $s2 ]
+then
+echo "Equal"
+else
+echo "Not Equal"
+fi
