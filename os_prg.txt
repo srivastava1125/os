@@ -1,0 +1,146 @@
+#include<stdio.h>
+#include<sys/types.h>
+#include<unistd.h>
+
+int main(){
+int fr=fork();
+int pid=getpid();
+int ppid=getppid();
+
+if(fr==0){
+printf("Child Process\n");
+printf("FR:%d\n",fr);
+printf("GetPid:%d\n",pid);
+printf("GetPPid:%d\n",ppid);
+}
+else if(fr>0){
+printf("Parent Process\n");
+printf("FR:%d\n",fr);
+printf("GetPid:%d\n",pid);
+printf("GetPPid:%d\n",ppid);
+}
+return 0;
+}
+
+
+
+
+
+
+
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/ipc.h>
+#include<sys/wait.h>
+#include<sys/msg.h>
+#include<string.h>
+#define SIZE 25
+
+struct alpha
+{
+	long num;
+	char text[SIZE];
+}m1,m2,n1,n2;
+
+void setData(){
+	m1.num = 1;
+	strcpy(m1.text,"Hello");
+	n1.num = 2;
+	strcpy(n1.text,"World");
+}
+
+int main(){
+int mqid,fr,var1,var2;
+setData();
+mqid=msgget((key_t)100,IPC_CREAT|0666);
+fr=fork();
+if(fr==0){
+	var1 = msgsnd(mqid,&m1,SIZE,0);
+	var1 = msgsnd(mqid,&n1,SIZE,0);
+}
+else{
+			wait(0);
+			var2 = msgrcv(mqid, &m2, SIZE,1,0);
+			printf("Msg1:%s\n",m2.text);
+			var2 = msgrcv(mqid, &n2, SIZE,2,0);
+			printf("Msg2:%s\n",n2.text);
+}
+return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/wait.h>
+#include<sys/ipc.h>
+#include<sys/msg.h>
+#include<string.h>
+#include<sys/shm.h>
+
+
+int main(){
+int shmid,fr;
+char *beta;
+shmid=shmget((key_t)23,50,IPC_CREAT|0666);
+beta=shmat(shmid,0,0);
+fr=fork();
+if(fr==0)
+{
+strcpy(beta,"Hello");
+}
+else{
+wait(0);
+printf("%s",beta);
+}
+return 0;
+}
+
+
+
+
+
+
+
+
+
+#include<stdio.h>
+#include<sys/types.h>
+#include<unistd.h>
+#define SIZE 25
+
+int main(){
+int pr,alpha[2],fr;
+char temp[SIZE];
+pr=pipe(alpha);
+
+if(pr<0){
+printf("Pipe Failure\n");
+}
+
+fr=fork();
+if(fr==0){
+close(alpha[0]);
+write(alpha[1],"hello",SIZE);
+printf("Written\n");
+close(alpha[1]);
+}
+else{
+close(alpha[1]);
+read(alpha[0],temp,SIZE);
+printf("READ\n");
+printf("Data:%s\n",temp);
+close(alpha[0]);
+}
+return 0;
+}
